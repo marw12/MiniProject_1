@@ -1,8 +1,6 @@
 # Importing the libraries
 import numpy as np
 import pandas as pd
-#import tensorflow as tf
-
 
 
 #Data Preprocessing
@@ -22,21 +20,13 @@ dataset_2 = dataset_2.dropna(axis='rows', how='all')  #removes rows with all NaN
 
 #Match time resolution
 
-pd.set_option('display.max_columns', None)
-print("DataSet2:")
-print(dataset_2[:5])
+#chnaging date formt to datetime64
+dataset_1['date'] = pd.to_datetime(dataset_1['date'])
+dataset_2['date'] = pd.to_datetime(dataset_2['date'])
+dataset_2 = dataset_2.groupby(['open_covid_region_code', pd.Grouper(key='date', freq='W-MON')])['hospitalized_new'].sum().reset_index().sort_values('date')
 
-print("DataSet1:")
-print(dataset_1[:5])
+#Merge the two datasets
 
-print("Dataset 1 DATE")
-#Printing DATE of first 4 Rows of dataset 2
-print(dataset_2[:4].date.to_string(index=False))
+#merging on multiple columns
+dataset_3 = pd.merge(dataset_1, dataset_2[['date', 'open_covid_region_code', 'hospitalized_new']], on=['date', "open_covid_region_code"])
 
-print("Dataset 2 DATE")
-#Printing DATE of first 4 Rows of dataset 1
-print(dataset_1[:4].date.to_string(index=False))
-
-dataset3 = pd.merge(dataset_1, dataset_2, on="date")
-print("MERGED BASED ON SAME DATE")
-print(dataset3[:10])
