@@ -1,7 +1,7 @@
 # Importing the libraries
 import numpy as np
 import pandas as pd
-import tensorflow as tf
+#import tensorflow as tf
 
 
 
@@ -23,4 +23,12 @@ dataset_2 = dataset_2.dropna(axis='rows', how='all')  #removes rows with all NaN
 #Match time resolution
 
 pd.set_option('display.max_columns', None)
-print(dataset_2)
+#print(dataset_2)
+
+print("Dataset 1 DATE")
+#Printing DATE of first 4 Rows of dataset 2
+print(dataset_2[:4].date.to_string(index=False))
+
+print("Dataset 2 DATE")
+#Printing DATE of first 4 Rows of dataset 1
+print(dataset_1[:4].date.to_string(index=False))
