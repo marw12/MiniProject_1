@@ -9,13 +9,16 @@ import pandas as pd
 
 # Importing the dataset
 dataset_1 = pd.read_csv('2020_US_weekly_symptoms_dataset.csv')  #Search Trends dataset
+
+
 dataset_2 = pd.read_csv('aggregated_cc_by.csv', dtype={"test_units": "object"})  #hospitalization cases dataset
 dataset_2 = dataset_2.iloc[78164:90022]  #Loading rows for USA only and rows that don't have all missing values
+
 
 #Cleaning the datasets
 
 dataset_1 = dataset_1.dropna(axis='columns', how='all')  #removes columns with all NaN values
-dataset_1 = dataset_1.dropna(axis='rows', how='all')  #removes rows with all NaN values
+dataset_1 = dataset_1.dropna(axis='rows', how='all', thresh=20)  #removes rows with all NaN values
 
 dataset_2 = dataset_2.dropna(axis='columns', how='all')  #removes columns with all NaN values
 dataset_2 = dataset_2.dropna(axis='rows', how='all')  #removes rows with all NaN values
@@ -60,24 +63,24 @@ from sklearn.model_selection import train_test_split
 X_train_1, X_test_1, y_train_1, y_test_1 = train_test_split(X, y,train_size = 0.8, test_size = 0.2, random_state = 0, shuffle = True)
 
 #Split the data at index 369 as that will contain all the data till 2020-08-10 for our training set (startagey #2)
-X_train_2 = X[:369, :]
-y_train_2 = y[:369]
+# X_train_2 = X[:369, :]
+# y_train_2 = y[:369]
 
-X_test_2 = X[369:, :]
-y_test_2 = y[369:]
+# X_test_2 = X[369:, :]
+# y_test_2 = y[369:]
 
 #training the KNN model on the training data
 from sklearn.neighbors import KNeighborsRegressor
 knn = KNeighborsRegressor(n_neighbors = 13, metric = 'minkowski', p = 2)
 knn.fit(X_train_1, y_train_1)
-knn.fit(X_train_2, y_train_2)
+# knn.fit(X_train_2, y_train_2)
 
 #predicting
 from sklearn import metrics
 y_pred_1 = knn.predict(X_test_1)
-y_pred_2 = knn.predict(X_test_2)
-# print('predicted   Actual')
-# print(np.concatenate((y_pred.reshape(len(y_pred),1), y_test.reshape(len(y_test),1)),1))
+# y_pred_2 = knn.predict(X_test_2)
+print('predicted   Actual')
+print(np.concatenate((y_pred_1.reshape(len(y_pred_1),1), y_test_1.reshape(len(y_test_1),1)),1))
 print(knn.score(X_test_1, y_test_1))
 
 #accuracy
@@ -92,17 +95,17 @@ print('KNN Strategy #1 Root Mean Squared Error:', np.sqrt(metrics.mean_squared_e
 
 print('')
 
-print('KNN Strategy #2 Mean Absolute Error:', metrics.mean_absolute_error(y_test_2, y_pred_2))
-print('KNN Strategy #2 Mean Squared Error:', metrics.mean_squared_error(y_test_2, y_pred_2))
-print('KNN Strategy #2 Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test_2, y_pred_2)))
+# print('KNN Strategy #2 Mean Absolute Error:', metrics.mean_absolute_error(y_test_2, y_pred_2))
+# print('KNN Strategy #2 Mean Squared Error:', metrics.mean_squared_error(y_test_2, y_pred_2))
+# print('KNN Strategy #2 Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test_2, y_pred_2)))
 
 
 #search for an optimal value of K for KNN
 
 # range of k we want to try
-k_range = range(1, 31)
-# empty list to store scores
-k_scores = []
+# k_range = range(1, 31)
+# # empty list to store scores
+# k_scores = []
 
 # 1. we will loop through reasonable values of k
 # for k in k_range:
