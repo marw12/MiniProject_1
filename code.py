@@ -165,3 +165,48 @@ plt.title('Search Frequency for the Symptom: Aphonia')
 plt.legend()
 plt.show()
 
+#Tasks 2.2 PCA
+#For task 2.2 we use the search trends dataset(i.e. dataset1)
+
+#First we will remove everything except the features
+dataset_4 = dataset_1.drop(['open_covid_region_code', 'country_region', 'sub_region_1', 'sub_region_1_code', 'country_region_code', 'date'], axis = 'columns')
+
+#Drop collumns with less than 250 values
+dataset_4.dropna(axis = 1, inplace= True, how = all, thresh = 250)
+
+#Put 0 for all nan values
+dataset_4.fillna(0, inplace = True)
+
+#Lets first plot the variance vs PC's to see how many PC's we need in order to retain ~95% of the data
+#Please note that this code was adapted from the sklean coding tutorial 
+from sklearn.decomposition import PCA
+
+pca2 = PCA()
+pca2.fit(dataset_4)
+num_pc_components = len(pca2.explained_variance_ratio_)
+plt.subplot(2,1,1)
+plt.plot(np.linspace(1,num_pc_components,num_pc_components),100*pca2.explained_variance_ratio_)
+plt.xlabel("Principal Component #")
+plt.xlim(0,20)
+plt.ylabel("% Variance explained")
+plt.title("Variance Explained vs Principal Components")
+
+plt.subplot(2,1,2)
+plt.plot(np.linspace(1,num_pc_components,num_pc_components),100*np.cumsum(pca2.explained_variance_ratio_))
+plt.plot(np.linspace(1,num_pc_components,num_pc_components),95*np.ones((num_pc_components,)),'k--')
+plt.xlabel("Principal Component #")
+plt.xlim(0,20)
+plt.ylabel("% Variance explained")
+plt.title("Cumulative Variance Explained vs Principal Components")
+plt.show()
+
+
+#Im going to choose to keep 10 PC's in order to retain ~95% of the data
+pca = PCA(n_components=10)
+pca.fit(dataset_4)
+reduced_dataset_4 = pca.transform(dataset_4)
+
+plt.scatter(reduced_dataset_4[:,0], reduced_dataset_4[:,1])
+plt.xlabel("PC #1")
+plt.ylabel("PC #2")
+plt.show()
