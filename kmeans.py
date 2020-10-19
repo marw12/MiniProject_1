@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 pd.set_option('display.max_columns', 500)
+
 # Importing the dataset
 dataset_1 = pd.read_csv('2020_US_weekly_symptoms_dataset.csv')  #Search Trends dataset
 
@@ -89,3 +90,4 @@ sns.scatterplot(x="X", y="Y", data=tsne_df, hue="cluster", palette=['purple','re
                        'dodgerblue','green','lightgreen','darkcyan', 'black', 'pink', 'tan', 'aqua', 'darkgray', 'yellow', 'lime'],
               legend='full');
 
+    
