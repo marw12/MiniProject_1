@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from sklearn import preprocessing
 
 ### TASK 1
 
@@ -60,34 +60,57 @@ for x in range(0, len(statesToDrop)):
 #Lets plot the search frequency for shallowbreathing first. We will do states DC, Delaware, Maine, West Virginia, RHode Island, New Hampshire
 #Weeks will be the same for all so
 weekX = [10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,34,35,36,37,38,39]
+# Create a minimum and maximum processor object
+min_max_scaler = preprocessing.MinMaxScaler()
 
+def normalizer(regionName, Sym):
+    dc = simplifiedSet[simplifiedSet.sub_region_1 == regionName]
+    dc = dc[[Sym]]
+    df = pd.DataFrame(dc)
+    # Create x, where x the 'scores' column's values as floats
+    x = df[[Sym]].values.astype(float)
+    # Create an object to transform the data to fit minmax processor
+    x_scaled = min_max_scaler.fit_transform(x)
+    # Run the normalizer on the dataframe
+    df_normalized = pd.DataFrame(x_scaled)
+    # View the dataframe
+    return df_normalized.values.tolist()
+    
 #Now we need to pull out the relevant values for the symptom/weeks we want
 shallowDCY = simplifiedSet[simplifiedSet.sub_region_1 == 'District of Columbia']
 shallowDCY = shallowDCY[['symptom:Shallow breathing']]
-shallowDCY = shallowDCY.values.tolist()
+shallowDCY = shallowDCY.values.tolist()    
+shallowDCY = normalizer('District of Columbia', 'symptom:Shallow breathing')
 
 shallowDelawareY = simplifiedSet[simplifiedSet.sub_region_1 == 'Delaware']
 shallowDelawareY = shallowDelawareY[['symptom:Shallow breathing']]
 shallowDelawareY = shallowDelawareY.values.tolist()
+shallowDelawareY = normalizer('Delaware', 'symptom:Shallow breathing')
+
 
 shallowMaineY = simplifiedSet[simplifiedSet.sub_region_1 == 'Maine']
 shallowMaineY = shallowMaineY[['symptom:Shallow breathing']]
 shallowMaineY = shallowMaineY.values.tolist()
+shallowMaineY  = normalizer('Maine', 'symptom:Shallow breathing')
 
 shallowWestVirY = simplifiedSet[simplifiedSet.sub_region_1 == 'West Virginia']
 shallowWestVirY = shallowWestVirY[['symptom:Shallow breathing']]
 shallowWestVirY = shallowWestVirY.values.tolist()
+shallowWestVirY = normalizer('West Virginia', 'symptom:Shallow breathing')
 
 shallowRhodeY = simplifiedSet[simplifiedSet.sub_region_1 == 'Rhode Island']
 shallowRhodeY = shallowRhodeY[['symptom:Shallow breathing']]
 shallowRhodeY = shallowRhodeY[1::]
 shallowRhodeY = shallowRhodeY.values.tolist()
+shallowRhodeY = normalizer('Rhode Island', 'symptom:Shallow breathing')
+shallowRhodeY = shallowRhodeY[1::]
+
 
 shallowHampshireY = simplifiedSet[simplifiedSet.sub_region_1 == 'New Hampshire']
 shallowHampshireY = shallowHampshireY[['symptom:Shallow breathing']]
 shallowHampshireY = shallowHampshireY.values.tolist()
-
-#Now we plot
+shallowHampshireY  = normalizer('New Hampshire', 'symptom:Shallow breathing')
+#Now we plot SHALLOw BREATHING
 plt.plot(weekX, shallowDCY, label = 'District of Columbia')
 plt.plot(weekX, shallowDelawareY, label = 'Delaware')
 plt.plot(weekX, shallowMaineY, label = 'Maine')
@@ -95,6 +118,7 @@ plt.plot(weekX, shallowRhodeY, label = 'Rhode Island')
 plt.plot(weekX, shallowHampshireY, label = 'New Hampshire')
 plt.xlabel('Week')
 plt.ylabel('Frequency')
+plt.ylim(0,1)
 plt.title('Search Frequency for the Symptom: Shallow Breathing')
 plt.legend()
 plt.show()
@@ -105,27 +129,34 @@ ventGraph = simplifiedSet[['sub_region_1','symptom:Ventricular fibrillation']]
 ventDCY = ventGraph[ventGraph.sub_region_1 == 'District of Columbia']
 ventDCY = ventDCY[['symptom:Ventricular fibrillation']]
 ventDCY = ventDCY.values.tolist()
+ventDCY = normalizer('District of Columbia', 'symptom:Ventricular fibrillation')
 
 ventDelY = ventGraph[ventGraph.sub_region_1 == 'Delaware']
 ventDelY= ventDelY[['symptom:Ventricular fibrillation']]
 ventDelY = ventDelY.values.tolist()
+ventDelY = normalizer('Delaware', 'symptom:Ventricular fibrillation')
 
 ventMaineY = ventGraph[ventGraph.sub_region_1 == 'Maine']
 ventMaineY = ventMaineY[['symptom:Ventricular fibrillation']]
 ventMaineY = ventMaineY.values.tolist()
+ventMaineY = normalizer('Maine', 'symptom:Ventricular fibrillation')
 
 ventNHY = ventGraph[ventGraph.sub_region_1 == 'New Hampshire']
 ventNHY = ventNHY[['symptom:Ventricular fibrillation']]
 ventNHY = ventNHY.values.tolist()
+ventNHY = normalizer('New Hampshire', 'symptom:Ventricular fibrillation')
 
 ventRIY = ventGraph[ventGraph.sub_region_1 == 'Rhode Island']
 ventRIY = ventRIY[['symptom:Ventricular fibrillation']]
 ventRIY = ventRIY[1::]
 ventRIY = ventRIY.values.tolist()
+ventRIY = normalizer('Rhode Island', 'symptom:Ventricular fibrillation')
+ventRIY = ventRIY[1::]
 
 ventWVY = ventGraph[ventGraph.sub_region_1 == 'West Virginia']
 ventWVY = ventWVY[['symptom:Ventricular fibrillation']]
 ventWVY = ventWVY.values.tolist()
+ventWVY = normalizer('West Virginia', 'symptom:Ventricular fibrillation')
 
 #Plot the Ventricular Fibrillation graph
 plt.plot(weekX, ventDCY, label = 'District of Columbia')
@@ -136,6 +167,7 @@ plt.plot(weekX, ventRIY, label = 'Rhode Island')
 plt.plot(weekX, ventWVY, label = 'West Virginia')
 plt.xlabel('Week')
 plt.ylabel('Frequency')
+plt.ylim(0,3)
 plt.title('Search Frequency for the Symptom: Ventricular Fibrillation')
 plt.legend()
 plt.show()
@@ -146,21 +178,24 @@ aphoniaGraph = simplifiedSet[['sub_region_1','symptom:Aphonia']]
 aphoniaMaineY = aphoniaGraph[aphoniaGraph.sub_region_1 == 'Maine']
 aphoniaMaineY = aphoniaMaineY[['symptom:Aphonia']]
 aphoniaMaineY = aphoniaMaineY.values.tolist()
+aphoniaMaineY= normalizer('Maine', 'symptom:Aphonia')
 
 aphoniaNebraskaY = aphoniaGraph[aphoniaGraph.sub_region_1 == 'Nebraska']
 aphoniaNebraskaY = aphoniaNebraskaY[['symptom:Aphonia']]
 aphoniaNebraskaY = aphoniaNebraskaY.values.tolist()
+aphoniaNebraskaY = normalizer('Nebraska', 'symptom:Aphonia')
 
 aphoniaNewMY = aphoniaGraph[aphoniaGraph.sub_region_1 == 'New Mexico']
 aphoniaNewMY = aphoniaNewMY[['symptom:Aphonia']]
 aphoniaNewMY = aphoniaNewMY.values.tolist()
-
-#Plot now
+aphoniaNewMY = normalizer('New Mexico', 'symptom:Aphonia')
+#Plot now - APHONIA
 plt.plot(weekX, aphoniaMaineY, label = 'Maine')
 plt.plot(weekX, aphoniaNebraskaY, label = 'Nebraska')
 plt.plot(weekX, aphoniaNewMY, label = 'New Mexico')
 plt.xlabel('Week')
 plt.ylabel('Frequency')
+plt.ylim(0,1)
 plt.title('Search Frequency for the Symptom: Aphonia')
 plt.legend()
 plt.show()
